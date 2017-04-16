@@ -10,12 +10,14 @@ import UIKit
 
 class FancyView: UIView {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    override func awakeFromNib() {
+        
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.7
+        layer.shadowOffset = CGSize.zero
+        layer.shadowRadius = 5.0
+        layer.cornerRadius = 3.0
+        
     }
-    */
 
 }

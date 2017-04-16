@@ -7,17 +7,18 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginVC: UIViewController {
 
     @IBOutlet weak var passField: UITextField!
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var registerLabelBottomConst: NSLayoutConstraint!
-    @IBOutlet weak var singUpView: UIView!
-    @IBOutlet weak var logInView: UIView!
-    @IBOutlet weak var segController: UISegmentedControl!
+ 
     
     var isRegister = false
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,27 +27,6 @@ class LoginVC: UIViewController {
         
     }
 
-    @IBAction func segmentedPressed(_ sender: UISegmentedControl) {
-        
-       isRegister = !isRegister
-        
-        if !isRegister {
-          
-            logInView.isHidden = false
-            singUpView.isHidden = true
-            
-        } else {
-            logInView.isHidden = true
-            singUpView.isHidden = false
-        }
-        
-        
-        
-    
-    }
-    
-    
-    
     
     func keyboardWillShow(notification: NSNotification) {
         if let info = notification.userInfo {
@@ -77,14 +57,29 @@ class LoginVC: UIViewController {
         view.endEditing(true)
     
          NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
-        
-        
+
         
     }
     
     
     @IBAction func signInPressed(_ sender: Any) {
+        
+        guard emailField.text != "", passField.text != "" else {
+            return
+        }
+        
+        FIRAuth.auth()?.signIn(withEmail: emailField.text!, password: passField.text!, completion: { (user, error) in
+            if error != nil {
+                print("SASKA: Error when signing user in")
+            }
+            
+            if user != nil {
+                print("User successfully signed in")
+                self.performSegue(withIdentifier: "MainVC", sender: nil)
+            }
+        })
+        
+        
     }
     
     

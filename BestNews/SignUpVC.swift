@@ -7,29 +7,70 @@
 //
 
 import UIKit
+import Firebase
 
 class SignUpVC: UIViewController {
 
+    @IBOutlet weak var passField: FancyField!
+    @IBOutlet weak var emailField: FancyField!
+    @IBOutlet weak var lastNameField: FancyField!
+    @IBOutlet weak var firstNameField: FancyField!
+    
+    var ref: FIRDatabaseReference!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        ref = FIRDatabase.database().reference()
+    
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func signUpPressed(_ sender: Any) {
+        
+        guard passField.text != "", emailField.text != "", firstNameField.text != "", lastNameField.text != "" else {
+            return
+        }
+        
+        if (passField.text?.characters.count)! > 5 {
+        
+        FIRAuth.auth()?.createUser(withEmail: emailField.text!, password: passField.text!, completion: { (user, error) in
+            
+            if user != nil {
+                
+            print("Account created successfully")
+            
+                self.ref.child("Users").child(user!.uid).setValue(["Name": "\(self.firstNameField.text!) \(self.lastNameField.text!)"])
+                
+             let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+             changeRequest?.displayName = "Saska Rauhala"
+                
+                changeRequest?.commitChanges(completion: { (error) in
+                    if error != nil {
+                        print(error?.localizedDescription)
+                    } else {
+                        print(user?.displayName!)
+                        self.performSegue(withIdentifier: "goToMain", sender: nil)
+                    }
+                })
+                
+            
+            
+            }
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            
+        })
+        
+        } else {
+            print("Password has to be at least 6 characters long")
+        }
     }
-    */
-
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    @IBAction func backToLogin(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 }

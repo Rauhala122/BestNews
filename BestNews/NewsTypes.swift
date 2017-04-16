@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+class NewsTypes {
+    private var _name: String!
+    
+    var name: String {
+        return _name
+    }
+    
+    init(name: String) {
+        _name = name
+    }
+}

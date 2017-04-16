@@ -10,12 +10,11 @@ import UIKit
 
 class FancyField: UITextField {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    override func awakeFromNib() {
+        layer.borderColor = UIColor.gray.cgColor
+        layer.borderWidth = 1.0
+        layer.cornerRadius = 3.0
+        layer.backgroundColor = UIColor.white.cgColor
     }
-    */
 
 }
