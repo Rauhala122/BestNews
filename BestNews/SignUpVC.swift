@@ -10,26 +10,47 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
+import FirebaseStorage
 
-class SignUpVC: UIViewController {
+class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
+    @IBOutlet weak var profileImage: RoundedImage!
     @IBOutlet weak var passField: FancyField!
     @IBOutlet weak var emailField: FancyField!
-    @IBOutlet weak var lastNameField: FancyField!
-    @IBOutlet weak var firstNameField: FancyField!
+    @IBOutlet weak var nameField: FancyField!
+    @IBOutlet weak var usernameField: FancyField!
     
     var ref: FIRDatabaseReference!
+    var stor: FIRStorageReference!
+    var imagePicker: UIImagePickerController!
+    
+    var imageSelected = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         ref = FIRDatabase.database().reference()
+        stor = FIRStorage.storage().reference()
+        
+        imagePicker = UIImagePickerController()
+        imagePicker.allowsEditing = true
+        imagePicker.delegate = self
+        
+    }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            imageSelected = true
+            profileImage.image = image
+        }
+        
+        imagePicker.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func signUpPressed(_ sender: Any) {
         
-        guard passField.text != "", emailField.text != "", firstNameField.text != "", lastNameField.text != "" else {
+        guard passField.text != "", emailField.text != "", nameField.text != "", usernameField.text != "" else {
             return
         }
         
@@ -40,26 +61,44 @@ class SignUpVC: UIViewController {
             if user != nil {
                 
             print("Account created successfully")
-            
-                self.ref.child("Users").child(user!.uid).setValue(["Name": "\(self.firstNameField.text!) \(self.lastNameField.text!)"])
                 
-             let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
-             changeRequest?.displayName = "Saska Rauhala"
+                if let imgData = UIImageJPEGRepresentation(self.profileImage.image!, 0.2) {
+                    
+                    let imgUid = "profileImage"
+                 
+                    
+                    self.stor.child(user!.uid).child(imgUid).put(imgData, metadata: nil, completion: { (metadata, error) in
+                        if error != nil {
+                            return
+                        } else {
+                            let imageUrl = metadata?.downloadURL()?.absoluteString
+                            self.ref.child("users").child(user!.uid).setValue(["name": self.nameField.text!, "username": self.usernameField.text!, "photoUrl": imageUrl])
+                        }
+                    })
+                }
+                    
                 
-                changeRequest?.commitChanges(completion: { (error) in
-                    if error != nil {
-                        print(error?.localizedDescription)
-                    } else {
-                        print(user?.displayName!)
-                        self.performSegue(withIdentifier: "goToMain", sender: nil)
-                    }
-                })
-                
-            
-            
+                    
+                    
+                    let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+                    changeRequest?.displayName = "\(String(describing: self.usernameField.text))"
+                    
+                    changeRequest?.commitChanges(completion: { (error) in
+                        
+                        if error != nil {
+                            print(error!.localizedDescription)
+                        } else {
+                            print(user!.displayName!)
+                            self.performSegue(withIdentifier: "goToMain", sender: nil)
+                        }
+                    
+                    })
+                    
             }
+
+            
             if error != nil {
-                print(error?.localizedDescription)
+                print(error!.localizedDescription)
             }
             
         })
@@ -67,12 +106,21 @@ class SignUpVC: UIViewController {
         } else {
             print("Password has to be at least 6 characters long")
         }
-    }
+}
+
+
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
+    
     @IBAction func backToLogin(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction func imagePickerPressed(_ sender: Any) {
+        
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
 }

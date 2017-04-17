@@ -12,6 +12,7 @@ var key: String?
 
 class SharedNewsCell: UITableViewCell {
 
+    @IBOutlet weak var userPhotoImage: RoundedImage!
     @IBOutlet weak var commentsButton: UIButton!
     @IBOutlet weak var user: UILabel!
     @IBOutlet weak var source: UILabel!
@@ -26,13 +27,19 @@ class SharedNewsCell: UITableViewCell {
         source.text = sharedNews.source.uppercased()
         desc.text = sharedNews.desc
         title.text = sharedNews.title
+        userPhotoImage.image = UIImage(named: sharedNews.userPhotoUrl)
+        
+        
         
         let url = URL(string: sharedNews.imageURL)!
+        let imgUrl = URL(string: sharedNews.userPhotoUrl)!
         
         DispatchQueue.global().async {
             do {
                 let data = try Data(contentsOf: url)
+                let imgData = try Data(contentsOf: imgUrl)
                 DispatchQueue.global().sync {
+                    self.userPhotoImage.image = UIImage(data: imgData)
                     self.newsImage.image = UIImage(data: data)
                 }
             } catch  {

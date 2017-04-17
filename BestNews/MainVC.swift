@@ -65,7 +65,7 @@ class MainVC: UIViewController {
             isPopular = false
             isSubject = false
             subjectBtn.setImage(#imageLiteral(resourceName: "Elective-50"), for: .normal)
-        categoryBtn.setImage(#imageLiteral(resourceName: "Category Filled-50"), for: .normal)
+        categoryBtn.setImage(#imageLiteral(resourceName: "Category-48"), for: .normal)
         } else {
             if categoryView.isHidden == true {
             categoryBtn.setImage(#imageLiteral(resourceName: "Category-50"), for: .normal)
@@ -151,25 +151,6 @@ class MainVC: UIViewController {
         }
         
     }
-  
-    @IBAction func signOut(sender: Any) {
-
-        if FIRAuth.auth()?.currentUser != nil {
-
-        do {
-            try! FIRAuth.auth()?.signOut()
-            self.performSegue(withIdentifier: "goToLog", sender: self)
-        } catch {
-            print("Error when signing out user")
-        }
-        
-        } else {
-            print("You have to be signed in ")
-        }
-}
-    
-    
- 
     
     
 }

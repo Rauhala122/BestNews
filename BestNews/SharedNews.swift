@@ -15,6 +15,12 @@ class SharedNews {
     private var _imageURL: String!
     private var _user: String!
     private var _source: String!
+    private var _userPhotoUrl: String!
+    
+    
+    var userPhotoUrl: String {
+        return _userPhotoUrl
+    }
     
     var source: String {
         return _source
@@ -41,7 +47,10 @@ class SharedNews {
     }
     
     
-    init(title: String, desc: String, imageURL: String, user: String, key: String, source: String) {
+    init(title: String, desc: String, imageURL: String, user: String, key: String, source: String, userPhotoUrl: String) {
+        
+        
+        _userPhotoUrl = userPhotoUrl
         _title = title
         _desc = desc
         _imageURL = imageURL

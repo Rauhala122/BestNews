@@ -16,6 +16,26 @@ class NewsCell: UITableViewCell {
      
     var ref: FIRDatabaseReference!
     var news: News!
+    var name: String?
+    var photoUrl: String?
+    
+    
+    override func awakeFromNib() {
+        FIRAuth.auth()?.addStateDidChangeListener({ (auth, user) in
+            
+            self.ref.child("users").child(user!.uid).observe(.value, with: { (snapshot) in
+                if let dict = snapshot.value as? NSDictionary {
+                    if let username = dict["username"] as? String {
+                        self.name = username
+                    }
+                    if let imgUrl = dict["photoUrl"] as? String {
+                        self.photoUrl = imgUrl
+                    }
+                }
+            })
+            
+        })
+    }
     
     @IBOutlet weak var sourceLlb: UILabel!
     @IBOutlet weak var newsImage: UIImageView!
@@ -57,22 +77,26 @@ class NewsCell: UITableViewCell {
         let user = FIRAuth.auth()?.currentUser
         
         if user != nil {
+        FIRAuth.auth()?.addStateDidChangeListener({ (auth, user) in
+            
         
-        let name = user?.displayName
+            
+            let title = self.newsTitle.text
+            let desc = self.newsDesc.text
+            let source = self.sourceLlb.text
+            let imageURL = self.imageURL
+            
+            let id = NSUUID().uuidString
+            
+            self.ref.child("sharedNews").child(id).setValue(["title": title, "desc": desc, "source": source, "imageURL": imageURL, "user": self.name!, "userPhotoUrl": self.photoUrl!
+                ])
+            
+            self.ref.child("users").child(user!.uid).child("sharedNews").child(id).setValue(true)
+            
+            print(self.name!)
+            
+        })
         
-        let title = self.newsTitle.text
-        let desc = self.newsDesc.text
-        let source = self.sourceLlb.text
-        let imageURL = self.imageURL
-        
-        let id = NSUUID().uuidString
-        
-        self.ref.child("sharedNews").child(id).setValue(["title": title, "desc": desc, "source": source, "imageURL": imageURL, "user": "\(name!)"
-            ])
-        
-        let user = FIRAuth.auth()?.currentUser
-        
-        self.ref.child("Users").child(user!.uid).child("sharedNews").child(self.postKey).setValue(true)
         
         } else {
             print("You have to be signed in if you want to share news")

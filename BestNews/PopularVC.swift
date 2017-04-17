@@ -43,8 +43,15 @@ class PopularVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                         var desc: String?
                         var imageURL: String?
                         var source: String?
+                        var userPhotoUrl: String?
                         
                         let key = snap.key
+                        
+                        if let userPhotoUrl1 = newDict["userPhotoUrl"] as? String {
+                            userPhotoUrl = userPhotoUrl1
+                            } else {
+                            userPhotoUrl = ""
+                        }
                         
                         if let source1 = newDict["source"] as? String {
                             source = source1
@@ -69,7 +76,7 @@ class PopularVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                         
                         let user = newDict["user"] as? String
                         
-                        let new = SharedNews(title: title!, desc: desc!, imageURL: imageURL!, user: user!, key: key, source: source!)
+                        let new = SharedNews(title: title!, desc: desc!, imageURL: imageURL!, user: user!, key: key, source: source!, userPhotoUrl: userPhotoUrl!)
                         
                         self.sharedNews.append(new)
                         
