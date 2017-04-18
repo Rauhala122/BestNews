@@ -10,6 +10,7 @@ import UIKit
 
 class CommentsCell: UITableViewCell {
 
+    @IBOutlet weak var userImage: RoundedImage!
     @IBOutlet weak var commenterLbl: UILabel!
     @IBOutlet weak var commentLbl: UITextView!
   
@@ -17,6 +18,7 @@ class CommentsCell: UITableViewCell {
         
         commenterLbl.text = comment.commenter
         commentLbl.text = comment.commentText
+        userImage.sd_setImage(with: URL(string: comment.userPhotoUrl))
         
         
     }

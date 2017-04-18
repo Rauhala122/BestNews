@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		72CAEDFD9D6618C68874A9E7 /* Pods_BestNews.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 693ADE1B67D7F40EA9059124 /* Pods_BestNews.framework */; };
+		F65559BB1EA64648006CD08F /* BorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65559BA1EA64648006CD08F /* BorderView.swift */; };
 		F68DD9F41E991C53004A7F09 /* SharedNewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68DD9F31E991C53004A7F09 /* SharedNewsCell.swift */; };
 		F69FCC851E9EAB8C00049D7F /* CommentsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69FCC841E9EAB8C00049D7F /* CommentsVC.swift */; };
 		F6B7F7D11EA0CE32006B9C3D /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B7F7D01EA0CE32006B9C3D /* Comment.swift */; };
@@ -45,6 +46,8 @@
 		693ADE1B67D7F40EA9059124 /* Pods_BestNews.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BestNews.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B33038897CEC4F0E65962947 /* Pods-BestNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BestNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-BestNews/Pods-BestNews.release.xcconfig"; sourceTree = "<group>"; };
 		E4AA768649D9E4AB709F5449 /* Pods-BestNews.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BestNews.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BestNews/Pods-BestNews.debug.xcconfig"; sourceTree = "<group>"; };
+		F65559B71EA53D2F006CD08F /* BestNews-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BestNews-Bridging-Header.h"; sourceTree = "<group>"; };
+		F65559BA1EA64648006CD08F /* BorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderView.swift; sourceTree = "<group>"; };
 		F68DD9F31E991C53004A7F09 /* SharedNewsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedNewsCell.swift; sourceTree = "<group>"; };
 		F69FCC841E9EAB8C00049D7F /* CommentsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsVC.swift; sourceTree = "<group>"; };
 		F6B7F7D01EA0CE32006B9C3D /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -142,6 +145,7 @@
 				F6FB0B341E7ECE0E00DB6B72 /* LaunchScreen.storyboard */,
 				F6FB0B371E7ECE0E00DB6B72 /* Info.plist */,
 				F6FB0B691E81ACF200DB6B72 /* Constants.swift */,
+				F65559B71EA53D2F006CD08F /* BestNews-Bridging-Header.h */,
 			);
 			path = BestNews;
 			sourceTree = "<group>";
@@ -167,8 +171,8 @@
 				F6FB0B5F1E819B7400DB6B72 /* CategoriesVC.swift */,
 				F6D231C61E86816A00560CC8 /* CategoryNews.swift */,
 				F6EF8F0D1E82F68600C0F898 /* SubjectVC.swift */,
-				F69FCC841E9EAB8C00049D7F /* CommentsVC.swift */,
 				F6FB0B611E819B8000DB6B72 /* PopularVC.swift */,
+				F69FCC841E9EAB8C00049D7F /* CommentsVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -186,6 +190,7 @@
 				F6EF8F111E84144600C0F898 /* NewsTypesCell.swift */,
 				F6E14CD31EA40B1700966376 /* CommentsCell.swift */,
 				F68DD9F31E991C53004A7F09 /* SharedNewsCell.swift */,
+				F65559BA1EA64648006CD08F /* BorderView.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -226,6 +231,7 @@
 					F6FB0B271E7ECE0D00DB6B72 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 6S2P992SW6;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -341,6 +347,7 @@
 				F6FB0B661E819DCB00DB6B72 /* NewsCell.swift in Sources */,
 				F6FB0B471E7EE06A00DB6B72 /* FancyView.swift in Sources */,
 				F6FB0B641E819C5600DB6B72 /* News.swift in Sources */,
+				F65559BB1EA64648006CD08F /* BorderView.swift in Sources */,
 				F6FB0B5E1E819B6800DB6B72 /* NewsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -463,12 +470,15 @@
 			baseConfigurationReference = E4AA768649D9E4AB709F5449 /* Pods-BestNews.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 6S2P992SW6;
 				INFOPLIST_FILE = BestNews/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.SarTekh.BestNews;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BestNews/BestNews-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -478,12 +488,14 @@
 			baseConfigurationReference = B33038897CEC4F0E65962947 /* Pods-BestNews.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 6S2P992SW6;
 				INFOPLIST_FILE = BestNews/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.SarTekh.BestNews;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BestNews/BestNews-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

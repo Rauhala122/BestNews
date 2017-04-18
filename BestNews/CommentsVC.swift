@@ -12,21 +12,26 @@ import Firebase
 
 class CommentsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var viewBottom: NSLayoutConstraint!
+    @IBOutlet weak var tableViewBottom: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
 
+    @IBOutlet weak var commentField: UITextField!
     var ref: FIRDatabaseReference!
-    
     var comments = [Comment]()
+    var username: String?
+    var userPhotUrl: String?
+
+    var index: Int?
+   
     private var _sharedNews: SharedNews!
     
     var sharedNews: SharedNews {
-        
         get {
             return _sharedNews
         } set {
             _sharedNews = newValue
         }
-    
     }
     
     override func viewDidLoad() {
@@ -34,32 +39,51 @@ class CommentsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         
+         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
         ref = FIRDatabase.database().reference()
         
+        print("Index in comment VC \(index!)")
+        
+        FIRAuth.auth()?.addStateDidChangeListener({ (auth, user) in
+            self.ref.child("users").child(user!.uid).observe(.value, with: { (snapshot) in
+                if let dict = snapshot.value as? NSDictionary {
+                    self.username = dict["username"] as? String
+                    self.userPhotUrl = dict["photoUrl"] as? String
+                }
+            })
+        })
+        
         ref.child("sharedNews").child(sharedNews.postKey).child("comments").observe(.value, with: { (snapshot) in
-            
             if let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot] {
+                
+                self.comments = []
                 
                 for snap in snapshot {
                     
-                    if let dict = snap.value as? Dictionary<String, AnyObject> {
+                    if let dict = snap.value as? NSDictionary {
                         
-                        let commentTxt = dict["comment"] as? String
+                        let commentText = dict["commentText"] as? String
                         let commenter = dict["commenter"] as? String
+                        let userPhotoUrl = dict["userPhotoUrl"] as? String
                         
-                        let comment = Comment(commentText: commentTxt!, commenter: commenter!)
+                        
+                        let comment = Comment(commentText: commentText!, commenter: commenter!, userPhotoUrl: userPhotoUrl!)
                         self.comments.append(comment)
                         self.tableView.reloadData()
                         
                     }
                     
                     
+                    
                 }
                 
+                
+                
             }
-            
         })
-        
+
+    
 
     }
     
@@ -90,14 +114,7 @@ class CommentsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         let comment = comments[indexPath.row]
         
-        var current = 38
-        var commentTxt = comment.commentText.characters.count
-        
-        
-        
         return 60
-        
-        
     }
     
     
@@ -107,6 +124,77 @@ class CommentsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
 
+    
+    @IBAction func commentPressed(_ sender: Any) {
+        
+        guard commentField.text != "", (commentField.text?.characters.count)! < 300 else {
+            return
+        }
+        
+        let user = FIRAuth.auth()?.currentUser
+        
+        let id = NSUUID().uuidString
+        
+        ref.child("sharedNews").child(sharedNews.postKey).child("comments").child(id).setValue(["commentText": commentField.text, "commenter": username, "userPhotoUrl": userPhotUrl])
+        ref.child("users").child(user!.uid).child("comments").child(id).setValue(true)
+        commentField.text = ""
+        view.endEditing(true)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        
+    }
+    
+    
+    
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        if let info = notification.userInfo {
+            
+            let rect: CGRect = info["UIKeyboardFrameEndUserInfoKey"] as! CGRect
+            
+            self.view.layoutIfNeeded()
+            
+            UIView.animate(withDuration: 0.3, animations: { 
+                self.view.layoutIfNeeded()
+                self.viewBottom.constant = rect.height
+                print(rect.height)
+                self.tableViewBottom.constant = rect.height + 40
+            })
+            
+            
+        }
+        
+        
+        
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        
+        if let info = notification.userInfo {
+            
+            let rect: CGRect = info["UIKeyboardFrameEndUserInfoKey"] as! CGRect
+            
+            self.view.layoutIfNeeded()
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
+                self.viewBottom.constant = rect.height - 216
+                self.tableViewBottom.constant = rect.height - 216 + 40
+            
+            })
+            
+            
+        }
+        
+        
+        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
     
     
 }

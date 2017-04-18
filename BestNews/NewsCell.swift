@@ -9,8 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
-import FirebaseDatabase
-
+import FirebaseDatabase 
 
 class NewsCell: UITableViewCell {
      
@@ -57,17 +56,7 @@ class NewsCell: UITableViewCell {
         newsDesc.text = news.desc
         sourceLlb.text = news.source.uppercased()
         
-        let url = URL(string: news.imageURL)!
-        DispatchQueue.global().async {
-            do {
-                let data = try Data(contentsOf: url)
-                DispatchQueue.global().sync {
-                    self.newsImage.image = UIImage(data: data)
-                }
-            } catch  {
-                print(error)
-                }
-            }
+        newsImage.sd_setImage(with: URL(string: news.imageURL))  
          
         
     }

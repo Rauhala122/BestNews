@@ -29,31 +29,14 @@ class SharedNewsCell: UITableViewCell {
         title.text = sharedNews.title
         userPhotoImage.image = UIImage(named: sharedNews.userPhotoUrl)
         
+        userPhotoImage.sd_setImage(with: URL(string: sharedNews.userPhotoUrl))
+        newsImage.sd_setImage(with: URL(string: sharedNews.imageURL))
         
         
-        let url = URL(string: sharedNews.imageURL)!
-        let imgUrl = URL(string: sharedNews.userPhotoUrl)!
         
-        DispatchQueue.global().async {
-            do {
-                let data = try Data(contentsOf: url)
-                let imgData = try Data(contentsOf: imgUrl)
-                DispatchQueue.global().sync {
-                    self.userPhotoImage.image = UIImage(data: imgData)
-                    self.newsImage.image = UIImage(data: data)
-                }
-            } catch  {
-                print(error)
-            }
-        }
 
         
     }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(true, animated: true)
-    
-    }
-    
+
     
 }

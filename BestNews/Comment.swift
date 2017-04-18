@@ -12,6 +12,11 @@ import Firebase
 class Comment {
     private var _commentText: String!
     private var _commenter: String!
+    private var _userPhotoUrl: String!
+    
+    var userPhotoUrl: String {
+        return _userPhotoUrl
+    }
     
     var commentText: String {
         return _commentText
@@ -21,7 +26,8 @@ class Comment {
         return _commenter
     }
     
-    init(commentText: String, commenter: String) {
+    init(commentText: String, commenter: String, userPhotoUrl: String) {
+        _userPhotoUrl = userPhotoUrl
         _commentText = commentText
         _commenter = commenter
     }

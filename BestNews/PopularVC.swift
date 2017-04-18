@@ -102,34 +102,34 @@ class PopularVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
             let sharedNew = sharedNews[indexPath.row]
             
             cell.updateUI(sharedNews: sharedNew)
+            cell.commentsButton.tag = indexPath.row
+            cell.commentsButton.addTarget(self, action: #selector(PopularVC.commentsPressed(_:)), for: UIControlEvents.touchUpInside)
             
             return cell
         } else {
             return SharedNewsCell()
         }
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let new = sharedNews[indexPath.row]
-        self.performSegue(withIdentifier: "commentVC", sender: new)
+
+    func commentsPressed(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "commentVC", sender: sender)
     }
     
-    
-
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-      
-        if let destination = segue.destination as? CommentsVC {
-            if let new = sender as? SharedNews {
-                destination.sharedNews = new
-            }
+        if(segue.identifier == "commentVC") {
+            if let destination = segue.destination as? CommentsVC {
+            
+                if let button: UIButton = sender as? UIButton {
+                    print(button.tag)
+                    destination.index = button.tag
+                    destination.sharedNews = sharedNews[button.tag]
+                }
+            
         }
         
+        }
         
     }
     
-    
-        
-
-
 }
